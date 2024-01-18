@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head profile="http://gmpg.org/xfn/11">
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Asia Gas Tracker</title>
+
+  <!-- no more missing favicon errors -->
+  <link rel="icon" href="data:;base64,iVBORwOKGO=" />
+
+  <!-- jQuery -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  
+  <!-- Bootstrap -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+  <!-- JavaScript Bundle with Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+
+  <!-- Leaflet CDN, GMaps for basemap --> 
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDKnFadLb_w2GHw2WtJwt9IB_AuhOjlumc&callback=Function.prototype" async defer></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet-src.js" integrity="sha512-I5Hd7FcJ9rZkH7uD01G3AjsuzFy3gqz7HIJvzFZGFt2mrCS4Piw9bYZvCgUE0aiJuiZFYIJIwpbNnDIM6ohTrg==" crossorigin=""></script>
+  
+  <!-- Leaflet mutant so we can include G-Satellite -->
+  <script src="https://unpkg.com/leaflet.gridlayer.googlemutant@latest/dist/Leaflet.GoogleMutant.js"></script>
+
+  <!-- Prunecluster clustering library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/prunecluster/2.1.0/PruneCluster.js" type="text/javascript"></script>
+
+  <!-- DataTables core and plugins -->
+  <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css">
+
+  <!-- tippy tooltips -->
+  <script src="https://unpkg.com/@popperjs/core@2"></script>
+  <script src="https://unpkg.com/tippy.js@6"></script>
+
+  <!-- Papa Parse for csv parsing -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/4.3.7/papaparse.min.js"></script>
+
+  <!-- lodash -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.4/lodash.min.js"></script>
+
+  <!-- polyfills for Promise, URLSearchParams -->
+  <script src="https://cdn.jsdelivr.net/npm/es6-promise@4/dist/es6-promise.auto.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/@ungap/url-search-params"></script>
+
+</head>
+<body>
+
+<!-- main page container, holding the nav tabs and content -->
+<div id="container" class="tab-wrapper">
+
+  <input class="tab" type="radio" id="map-tab" data-tab="map" name="tabs" checked>
+  <label class="tab" for="map-tab">Map</label>
+  <input class="tab" type="radio" id="table-tab" data-tab="table" name="tabs">
+  <label class="tab" for="table-tab">Table</label>
+
+
+  <!-- nav bar right side -->
+  <!-- search inputs -->
+  <div class="float-end searchwrapper">
+    <!-- this div needed as container for input w/button -->
+    <div class="visible-sm visible-md visible-lg">
+      <div class="d-inline-block w-auto">
+        <div id="search-outer">
+          <label for="search">Filter the map</label>
+          <span class="glyphicons glyphicons-search"></span>
+          <input id="search" type="text" class="form-control" data-type="nav" placeholder="Type a project name, company, country..." />
+          <a class="clear-search" title="click to clear the search">clear search</a>
+        </div>
+      </div><!-- /input-group -->
+    </div>
+  </div>
+
+  <!-- home button, positioned near nav, like a tab, but not a tab -->
+  <div id="home-button-wrapper">
+    <a id="home-button" title="Reset the map">
+      <span>Restart</span>
+      <!-- <span class="hidden-lg hidden-sm hidden-md glyphicon glyphicon-home"></span> -->
+    </a>
+  </div>
+
+  <!-- MAP TAB -->
+  <div class="content" id="map-content">
+    <div id="map" class="map"></div>
+
+    <!-- div to hold country 'results' -->
+    <div id="results-icon"><span class="glyphicon glyphicon-menu-hamburger"></span></div>
+    <div id="country-results">
+      <button class="btn-close float-end close" aria-label="Close" style="margin-top:-5px;"></button>
+      <div id="results-title">
+        <h3></h3>
+        <div id="total-count"><span id="total-number"></span> <span id="results_name"></span></div>
+        <div id="type-count"></div>
+      </div>
+    </div>
+
+    <!-- the layers icon and layer picker -->
+    <div id="layers-icon"></div>
+    <div data-panel="layers" class="layer-control">
+      <button class="btn-close float-end close" aria-label="Close" style="margin-top:-3px;"></button>
+
+      <!-- checkboxes to control display of status types and fossil types -->
+      <div id="status-types">
+        <span class="legend-title">Status</span>
+        <!-- select all/clear all -->
+        <div id="layer-control-clear">
+          <span data-type="status" id="select-all">select all</span> |
+          <span data-type="status" id="clear-all">clear all</span>
+        </div>
+        <!-- entries are hidden at first, shown depending on what is on the map -->
+        <div class="leaflet-control-layers-overlays"></div>
+      </div>
+
+      <div class="leaflet-control-layers-separator"></div>
+
+      <div id="fossil-types">
+        <span class="legend-title">Type</span>
+        <!-- select all/clear all -->
+        <div id="layer-control-clear">
+          <span data-type="fossil" id="select-all">select all</span> |
+          <span data-type="fossil" id="clear-all">clear all</span>
+        </div>
+        <!-- entries are hidden at first, shown depending on what is on the map -->
+        <div class="leaflet-control-layers-overlays"></div>
+      </div>
+      
+    </div><!-- layer-control -->
+  </div><!-- map-content -->
+
+  <!-- TABLE TAB -->
+  <div class="content" id="table-content">
+    <div id="table" class="content-container table-container">
+      <h3><span>All records</span></h3>
+      <table class="table table-striped table-hover display wrap" cellspacing="0" width="100%">
+        <thead></thead>
+        <tbody></tbody>
+      </table>
+    </div><!-- table wrapper-->
+  </div><!--table-content-->
+</div><!-- container -->
+
+<!-- modal to display individual tracker data when user clicks on a given tracker point -->
+<div class="modal" id="tracker-modal" tabindex="-1">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Tracker info</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+          <!-- two columns of attributes, generally 6-8 rows in each -->
+          <div class="col-md-6 modal-cols" id="modal-col-1"></div>
+          <div class="col-md-6 modal-cols" id="modal-col-2"></div>
+        </div>
+      </div>
+      <div class="modal-footer d-block">
+        <div class="modal-footer-buttons text-left">
+          <button type="button" id="btn-zoom" class="btn btn-info me-1" data-dismiss="modal" data-zoom="123,456">Zoom In</button>
+          <a id="wiki-link" target="_blank" type="button" role="button" class="btn btn-warning">More info <i class="glyphicons glyphicons-new-window"></i></a>
+        </div>
+        <p style="margin: 10px 0 0; text-align: right;">Published by <a href="https://globalenergymonitor.org/" target="_blank">Global Energy Monitor (GEM)</a></p>
+      </div><!-- /.modal-footer -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
+
+
+
+<!-- data loading animation -->
+<div id="loading">Loading&#8230;</div>
+
+</body>
+</html>
+

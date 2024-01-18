@@ -1,0 +1,6 @@
+/* leaflet-back-button.css*/
+/* custom leaflet control for back button */
+.btn-back { background: #fff; border-color: #333; }
+.btn-back:hover { background: #fff; color: #000; border-color: #111; }
+.btn-back a { display: inline-flex; justify-content: center; align-items: center; color: #333; font-weight: bold; text-decoration: none !important; }
+.btn-back a:hover { color: #000 };

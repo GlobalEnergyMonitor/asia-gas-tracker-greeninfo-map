@@ -1,0 +1,36 @@
+{
+  "name": "asia-gas-tracker",
+  "version": "1.0.0",
+  "description": "web map showing gas pipelines, terminals, extraction areas in Asia",
+  "main": "index.js",
+  "repository": "https://github.com/GreenInfo-Network/asia-gas-tracker.git",
+  "author": "Tom Allnutt <tom@greeninfo.org>",
+  "license": "MIT",
+  "scripts": {
+    "start": "webpack serve --port 2169 --open --config webpack.dev.config.js",
+    "build": "webpack --config webpack.build.config.js"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.13.14",
+    "@babel/preset-env": "^7.13.12",
+    "babel-loader": "^8.2.2",
+    "copy-webpack-plugin": "^8.1.1",
+    "cross-env": "^7.0.3",
+    "css-loader": "^5.2.0",
+    "html-webpack-plugin": "^5.3.1",
+    "mini-css-extract-plugin": "^1.4.1",
+    "postcss-loader": "^5.2.0",
+    "postcss-preset-env": "^7.2.0",
+    "sass": "^1.32.8",
+    "sass-loader": "^11.0.1",
+    "style-loader": "^2.0.0",
+    "webpack": "^5.31.0",
+    "webpack-cli": "^4.7.0",
+    "webpack-dev-server": "^4.9.3",
+    "webpack-merge": "^5.7.3"
+  },
+  "dependencies": {
+    "js-search": "^2.0.0",
+    "mobile-detect": "^1.4.5"
+  }
+}
