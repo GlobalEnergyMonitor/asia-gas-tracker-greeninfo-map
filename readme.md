@@ -28,6 +28,9 @@ To start a development server:
 ```
 npm run start
 ```
+## Development Troubleshooting Help 
+If using OSX and running into an ERROR6 OSGEOS error or missing gdal library try this via [https://gis.stackexchange.com/questions/316682/gdal-installation-on-mac-osx-via-conda-fails-linked-due-to-libpoppler-and-font]: 
+```conda create --name=gis gdal geopandas rasterio ipykernel --channel=conda-forge```
 
 
 ## Production
