@@ -77,14 +77,18 @@ That said, we still need to run this script for two reasons
 1. As a check on incoming data names. If something doesn't match `country_lookup.csv`, it gets flagged here and can be corrected in `data.csv` (and upstream in the spreadsheets)
 2. To subselect countries from `world.json` to use on the map as `countries.json`
 
-NOTE: 
+Note: 
 precision and simplification variables are set by the flags and parameters: 
 ```-lco COORDINATE_PRECISION={precision} ```
+
 ```-simplify {simplification}```
 
-If running into Error 1 problems, typically you can adjust these two parameters to help resolve geometries. Precision should stay at 3 however since we have a gem-wide agreement to standardize the number of decimals per point for exact and approximate coordinates. If there is a precision of 6, that means 6 decimal places will be retained. We have it set at 3. Extremely high precision may lead to ERROR1 issues like NaN or Inf values "CGAlgorithmsDD::orientationIndex encountered NaN/Inf numbers" and creates larger file sizes.
+Typically you can adjust these two parameters to help resolve geometric processing / geometric algorithm / orientation index calculation issues that can come up with ogr2ogr. Precision should stay at 3 however since we have a gem-wide agreement to standardize the number of decimals per point for exact and approximate coordinates. If there is a precision of 6, that means 6 decimal places will be retained. 
 
-Higher simplification results in coarser geometries where as lower precision will retain more detail in the geometries. The simplification value represents a distance threshold, and a higher value means that geometries will be simplified or generalized more aggressively.
+Extremely high precision created larger file sizes, and may lead to ERROR1 issues like NaN or Inf values:
+```"CGAlgorithmsDD::orientationIndex encountered NaN/Inf numbers"```
+
+Higher simplification results in smaller file sizes and coarser geometries where as lower precision will retain more detail in the geometries but will create larger file sizes. The simplification value represents a distance threshold, and a higher value means that geometries will be simplified or generalized more aggressively.
 
 
 
