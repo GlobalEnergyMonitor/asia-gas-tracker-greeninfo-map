@@ -79,8 +79,8 @@ That said, we still need to run this script for two reasons
 
 NOTE: 
 precision and simplification variables are set by the flags and parameters: 
--lco COORDINATE_PRECISION={precision} 
--simplify {simplification}
+```-lco COORDINATE_PRECISION={precision} ```
+```-simplify {simplification}```
 
 If running into Error 1 problems, typically you can adjust these two parameters to help resolve geometries. Precision should stay at 3 however since we have a gem-wide agreement to standardize the number of decimals per point for exact and approximate coordinates. If there is a precision of 6, that means 6 decimal places will be retained. We have it set at 3. Extremely high precision may lead to ERROR1 issues like NaN or Inf values "CGAlgorithmsDD::orientationIndex encountered NaN/Inf numbers" and creates larger file sizes.
 
