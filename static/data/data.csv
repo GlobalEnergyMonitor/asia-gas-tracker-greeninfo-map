@@ -1,4 +1,4 @@
-﻿project,unit,type,owner,parent,countries,status,start_year,capacity,production,capacity_production_unit,geom,lat,lng,route,url,status_legend
+﻿project,unit,type,owner,parent,countries,status_tabular,start_year,capacity,production,units,geom,lat,lng,route,url,status
 Abadi,,gas_extraction_area,,,Indonesia,discovered,2030 (expected),,,,point,-9.1706,130.46,,https://www.gem.wiki/Abadi_Oil_and_Gas_Field_(Indonesia),proposed_plus
 Adhi,,gas_extraction_area,Pakistan Petroleum Limited (39%);Oil and Gas Development Company Limited (50%);Pakistan Oilfields Limited (11%),Government of Pakistan (26.3%);PPL Employees Empowerment Trust (2.9%);Private Investors (9.8%);Oil and Gas Development Company Limited (50%);Attock Oil Company Limited (11%),Pakistan,operating,,,7.79,million boe/y,point,33.154,73.177,,https://www.gem.wiki/Adhi_Oil_and_Gas_Field_(Pakistan),operating
 Aghar,,gas_extraction_area,Iran Central Oil Fields Company (100%),National Iranian Oil Company (100%),Iran,operating,1999,,42.95,million boe/y,point,28.595,52.795,,https://www.gem.wiki/Aghar_Gas_Field_(Iran),operating
