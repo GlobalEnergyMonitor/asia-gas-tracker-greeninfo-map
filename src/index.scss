@@ -1,0 +1,600 @@
+/*
+ * VARIABLES
+ */
+
+/* manage global CSS vars here */
+
+/* status colors: custom defined */
+$status1: #cc0000; /* red */
+$status2: #ffa500; /* orange */
+$status3: #845440; /* brown */
+$status4: #7dd47d; /* green */
+$status5: #74add1; /* lt blue */
+$status6: #4575b4; /* dk blue */
+$status7: #666666; /* dk grey */
+$status8: #cccccc; /* lt grey */
+$status9: #c1a99f; /* lt brown */
+
+/* highlight color that is applied on selection */
+$highlight-color: #f2e360;
+
+/* additional symbol styles for lines and circles */
+$lineopacity: 0.8;
+$linewidth: 3;
+$linewidth_mobile: $linewidth + 2;
+$circlesize: 12;
+$circlesize_mobile: $circlesize + 2;
+$circleopacity: 0.85;
+
+/* 
+ * EXPORTS
+ */
+
+/* export any variables also used in JavaScript here. 
+   Dividing by units, makes them unitless (but always strings) */
+:export {
+  status1: $status1;
+  status2: $status2;
+  status3: $status3;
+  status4: $status4;
+  status5: $status5;
+  status6: $status6;
+  status7: $status7;
+  status8: $status8;
+  status9: $status9;
+  lineopacity: $lineopacity;
+  linewidth: $linewidth;
+  linewidth_mobile: $linewidth_mobile;
+  circlesize: $circlesize;
+  circlesize_mobile: $circlesize_mobile;
+  circleopacity: $circleopacity;
+  highlight_color: $highlight-color;
+}
+
+/* General page elements */
+
+* { padding: 0; margin: 0; outline: 0; }
+html, body { height: 100% }
+body {font-size: 14px; overflow-y: hidden;}
+#map { margin: 8px 0 0; width: 100%; height: calc(100vh - 62px); }
+div.content-container {padding:10px 15px;}
+div.table-container { width: 100%; font-size:90%; margin-bottom: 0; }
+
+input:focus::-webkit-input-placeholder { color:transparent; }
+input:focus:-moz-placeholder { color:transparent; } /* FF 4-18 */
+input:focus::-moz-placeholder { color:transparent; } /* FF 19+ */
+
+a {
+  color: #337ab7;
+  &:hover {
+    color: darken(#337ab7, 20%);
+  }
+}
+
+/* the container around the map/table tabs */
+div#container { 
+  padding: 10px 10px 0; 
+  margin: 0; 
+  background-color: #fff; 
+  border: 1px solid #ddd; 
+  border-radius: 4px 4px 0 0; 
+}
+
+/* the home button icon */
+div#home-button-wrapper { 
+  display: inline; 
+  margin: 0 0.5em 0;  
+}
+a#home-button { 
+  text-decoration:none; cursor: pointer;
+  padding:0.65em 0.7em;
+  &:hover {
+    background: #e6e6e6;
+    color: #337ab7;
+    border-radius:3px;
+  }
+}
+
+/* Simple CSS navigation tabs*/
+
+div.tab-wrapper input.tab {
+  display: none;
+}
+div.tab-wrapper label.tab {
+  box-sizing: border-box;
+  display: inline-block;
+  padding: 10px 15px;
+  color: #aaa;
+  margin-bottom: -1px;
+  margin-left: -1px;
+  font-weight: 400;
+  font-size: 14px;
+}
+div.tab-wrapper label.tab:before {
+  content:'';
+  display:block;
+  width:100%;
+  /*height:15px; causes overflow at bottom of tab content ! */
+  background-color:#fff;
+  position:absolute;
+  bottom:-11px;
+  left:0;
+  z-index:10;  
+}
+div.tab-wrapper label.tab:hover {
+  color: #666;
+  cursor: pointer;
+}
+div.tab-wrapper input.tab:checked + label.tab {
+  position: relative;
+  color: #000;
+  background: #fff;
+  border: 1px solid #bbb;
+  border-bottom: 1px solid #fff;
+  border-radius: 3px 3px 0 0;
+}
+div.tab-wrapper input.tab:checked + label.tab:after {
+  display: block;
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+}
+
+div.content {
+  border-top: 1px solid #ddd;
+  display: none;
+  margin: 0 -10px 0;
+  /*keep tabs at top, content overflow scroll below, after resizing content body*/
+  overflow-y: auto;
+}
+
+/* important: if adding a new tab, include markup for it here */
+input#map-tab:checked ~ div#map-content,
+input#table-tab:checked ~ div#table-content {
+  display: block;
+}
+
+/* Table styles */
+div#table-content table {
+  table-layout: fixed;
+  width: 100%;
+}
+
+/* Map country results */
+div#country-results { 
+  padding: 10px;
+  font-size: 13px;
+  line-height: 15px;
+  position: absolute;
+  top: 72px;
+  left: 12px;
+  background: #fff;
+  border-radius: 4px;
+  color: #333; 
+  box-shadow: 0 1px 5px rgba(0,0,0,0.4); 
+  z-index: 1004; 
+  // min-width: 200px; min-height:20px;
+  // width: 270px;
+}
+
+div#country-results div#results-title h3 {
+  font-size: 20px;
+  margin-top:0;
+  margin-bottom: 6px;
+  margin-right:1em;
+} 
+
+div#country-results div#results-title div#zoom-filtered {
+  padding-top: 3px;
+  text-align: right; 
+  a.zoomto {
+    font-size: 12px;
+    cursor: pointer;
+    font-weight: normal;
+  }
+}
+
+div#country-results div#total-count {
+  margin-top: 5px;
+  font-size: 16px;
+  font-weight:600;
+}
+
+div#country-results div#total-count span.zoom {
+  font-size: 12px;
+  font-weight: 300;
+  margin-left: 1em;
+}
+
+div#country-results div#type-count {
+  margin-top: 10px;
+}
+
+div#country-results div#type-count > div {
+  margin-bottom:5px;
+  color: #333;
+} 
+
+div#country-results div#type-count > div.zerocount {
+  color: #aaa;
+}
+
+div#country-results div#type-count > div > span {
+  float:right;
+  margin-right: 8px;
+  margin-left: 2em;
+}
+
+div#results-icon {
+  position:absolute;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+  width:40px; 
+  height:40px; 
+  z-index:1001;
+  border-radius: 4px;
+  top:73px;
+  left:13px;
+  background:#fff;
+  color: #444;
+  font-size:22px;
+  text-align: center;
+  line-height:45px;
+}
+
+/* Layer control panel and hidden icon */
+div.layer-control { 
+  padding: 7px;
+  font-size: 12px;
+  line-height: 15px;
+  position: absolute;
+  bottom: 22px;
+  right: 12px;
+  background: #fff;
+  border-radius: 4px;
+  color: #333;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.4); 
+  z-index: 1005; 
+  overflow-y: auto;
+  min-width: 135px;
+}
+div.layer-control label { display: block; font-weight: normal; margin-left: 3px; cursor: pointer; margin-bottom: 5px; }
+div.layer-control input { margin: -3px 0 0; vertical-align: middle; }
+
+/*icon that shows when the layer-control is hidden*/
+div#layers-icon { 
+  border-radius: 4px;
+  bottom: 22px;
+  right: 14px;
+  background-size: 50% 50%;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+  position: absolute;
+  background: #fff url('../static/images/layers.png') no-repeat center;
+  width:40px; 
+  height:40px; 
+  z-index:1001;
+  cursor:pointer;
+}
+
+/* Map legend and map marker styles */
+/* legend markers used in map legend, lines and circles*/
+div.circle { 
+ opacity: $circleopacity;
+ float: left;
+ margin: 0 6px 0 0;
+ width:13px;
+ height:13px;
+ border-radius:50%;
+ border: 1px solid rgba(100,100,100,0.8);
+}
+
+div.square {
+  float: left;
+  margin: 0 6px 0 0;
+  width:13px;
+  height:13px;
+}
+
+div.triangle {
+  background: none !important;
+  float: left;
+  margin: -1px 5px 0 -1px;
+  border-style: solid !important;
+  border-width: 0 7.5px 15px 7.5px !important;
+  border-color: transparent transparent #ababab transparent !important;
+}
+
+div.line { 
+ opacity: $lineopacity;
+ float: left;
+ width: 13px;
+ height: 4px;
+ margin-top: 3px;
+ margin-left: -1px;
+ margin-right: 7px;
+}
+
+div.empty {
+  background: #cecece;
+  border: 1px solid rgba(100,100,100,0.8);
+}
+
+div.line.empty { 
+  height:6px;
+  width:15px;
+}
+
+
+div.layer-control span.legend-title {
+  font-weight: bold;
+  font-size:14px;
+  display: inline-block;
+  margin: 4px 0 5px;
+}
+.leaflet-control-layers-overlays {margin:4px 0 6px;}
+.leaflet-control-layers-group label, .leaflet-control-layers-group input {cursor: pointer;}
+.leaflet-control-layers-group label { padding-left: 0;}
+.leaflet-control-layers-base label { padding-left: 4px;}
+.leaflet-control-layers-group-name { font-weight:bold; display:block; margin-bottom: 0.4em;}
+.leaflet-control-layers-group { margin-bottom: 0.4em;}
+.leaflet-control-layers-separator { margin: 5px -7px 5px -7px; }
+
+span.legend-label {
+  margin-left: 3px;
+}
+
+/* class names */
+.status1 {background: $status1;} /* red */
+.status2 {background: $status2;} /* orange */
+.status3 {background: $status3;} /* brown */
+.status4 {background: $status4;} /* green */
+.status5 {background: $status5;} /* lt blue */
+.status6 {background: $status6;} /* dk blue */
+.status7 {background: $status7;} /* dk grey */
+.status8 {background: $status8;} /* lt grey */
+.status9 {background: $status9;} /* lt brown */
+.highlight-icon {background: $highlight-color;}
+
+/* leaflet div icon styles - used on map in lieu of circle markers */
+.circle-div { 
+  opacity: $circleopacity; 
+  border-radius:50%; 
+}
+.square-div {
+  opacity: $circleopacity; 
+}
+.triangle-div {
+  border-style: solid;
+  border-width: 0 7.5px 15px 7.5px;
+  background: transparent;
+}
+
+/* non-triangle status classes */
+.status1:not(.cluster):not(.triangle-div) {background: $status1;}
+.status2:not(.cluster):not(.triangle-div) {background: $status2;}
+.status3:not(.cluster):not(.triangle-div) {background: $status3;}
+.status4:not(.cluster):not(.triangle-div) {background: $status4;}
+.status5:not(.cluster):not(.triangle-div) {background: $status5;}
+.status6:not(.cluster):not(.triangle-div) {background: $status6;}
+.status7:not(.cluster):not(.triangle-div) {background: $status7;}
+.status8:not(.cluster):not(.triangle-div) {background: $status8;}
+.status9:not(.cluster):not(.triangle-div) {background: $status9;}
+
+// triangle status classes
+.status1.triangle-div {border-color: transparent transparent $status1 transparent;}
+.status2.triangle-div {border-color: transparent transparent $status2 transparent;}
+.status3.triangle-div {border-color: transparent transparent $status3 transparent;}
+.status4.triangle-div {border-color: transparent transparent $status4 transparent;}
+.status5.triangle-div {border-color: transparent transparent $status5 transparent;}
+.status6.triangle-div {border-color: transparent transparent $status6 transparent;}
+.status7.triangle-div {border-color: transparent transparent $status7 transparent;}
+.status8.triangle-div {border-color: transparent transparent $status8 transparent;}
+.status9.triangle-div {border-color: transparent transparent $status9 transparent;}
+
+
+
+div#layer-control-clear {
+  text-align: center;
+  margin-bottom:4.8px;
+  font-size: 11px;
+  span {
+    cursor: pointer;
+    color: #337ab7;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+
+/* map tooltip style */
+.fossil-tooltip { background: #111; color: #fff; border:none; padding:0; margin: 0; font-weight:bold; padding: .25em 0.8em; height: auto; display:block !important; font-size:14px; height: 24px; line-height:14px; }
+.leaflet-tooltip-left::before,
+.leaflet-tooltip-left::after, 
+.leaflet-tooltip-right::before, 
+.leaflet-tooltip-right::after { 
+  border-left-color: transparent; border-right-color: transparent;
+}
+
+/* mask cursor */
+path.leaflet-interactive.mask {
+  cursor: move;
+}
+
+/* search input */
+span.glyphicon-search {
+  position: absolute;
+  right: 23px;
+  top: 20px;
+  z-index: 2;
+  color: #777;
+}
+
+div.searchwrapper label {
+  margin-right:5px;
+}
+
+/* only shows after something types into search input */
+div.searchwrapper a.clear-search {
+  font-size: 10px;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: none;
+  cursor: pointer;
+}
+
+div#search-outer {
+  position: relative;
+}
+
+div#search-outer span.glyphicons-search {
+  position: absolute;
+  top: 10px;
+  left: 107px;
+  color: #777;
+}
+
+input#search {
+  display: inline;
+  border-top-left-radius: 3px;
+  border-top-right-radius: 3px;
+  border-bottom-left-radius:3px;
+  border-bottom-right-radius: 3px;
+  width: 350px;
+  font-size: 14px;
+  padding-left: 2em;
+}
+
+input#search:focus {
+  border: 1px solid #333;
+}
+
+
+/* Datatables overrides and table styles */
+div#table h3 {margin-top: 10px;}
+.dataTables_filter { display: none !important; }
+td.highlight { font-weight: bold; color: #111; background-color: #fcede8 !important; font-size: 105%; }
+.cell-right { text-align: right; }
+/* this should be easily configurable in datatables, except that it's not */
+.totals.dataTable thead > tr > th { text-align: right !important; padding-right: 8px !important;}
+div.dataTables_info {float:right; margin-right:10px;}
+div.dataTables_wrapper div.dataTables_paginate ul.pagination {
+    justify-content: center;
+    margin-top: 10px;
+}
+
+/*
+ * INFO ICONS
+ */
+span.info {
+  // thanks webpack!
+  background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB2ZXJzaW9uPSIxLjEiIHg9IjBweCIgeT0iMHB4IiB2aWV3Qm94PSIwIDAgMTAyNCAxMDI0IiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCAxMDI0IDEwMjQ7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KCjxzdHlsZT4gICAgLyogPCFbQ0RBVEFbICovCiAgICBwYXRoIHsKICAgICAgZmlsbDogYmxhY2s7CiAgICAgIG9wYWNpdHk6IDAuNzU7CiAgICB9CiAgICAvKiBdXT4gKi8KICAgIDwvc3R5bGU+IAoKCgk8Zz48Zz48Zz48cGF0aCBkPSJNODU0LjUsNTEyLjVjMCwxNy42LTEuMiwzNS4yLTMuNSw1Mi43YzAuNi00LjQsMS4yLTguOSwxLjgtMTMuM2MtNC43LDM0LjMtMTMuOCw2Ny45LTI3LjMsOTkuOCAgICAgYzEuNy00LDMuNC04LDUtMTEuOWMtMTMuMiwzMS4yLTMwLjQsNjAuNS01MS4xLDg3LjNjMi42LTMuNCw1LjItNi43LDcuOC0xMC4xYy0yMC40LDI2LjItNDQsNDkuOC03MC4yLDcwLjIgICAgIGMzLjQtMi42LDYuNy01LjIsMTAuMS03LjhjLTI2LjgsMjAuNy01Ni4xLDM3LjktODcuMyw1MS4xYzQtMS43LDgtMy40LDExLjktNWMtMzEuOSwxMy40LTY1LjUsMjIuNi05OS44LDI3LjMgICAgIGM0LjQtMC42LDguOS0xLjIsMTMuMy0xLjhjLTM1LDQuNi03MC41LDQuNi0xMDUuNSwwYzQuNCwwLjYsOC45LDEuMiwxMy4zLDEuOGMtMzQuMy00LjctNjcuOS0xMy44LTk5LjgtMjcuM2M0LDEuNyw4LDMuNCwxMS45LDUgICAgIGMtMzEuMi0xMy4yLTYwLjUtMzAuNC04Ny4zLTUxLjFjMy40LDIuNiw2LjcsNS4yLDEwLjEsNy44Yy0yNi4yLTIwLjQtNDkuOC00NC03MC4yLTcwLjJjMi42LDMuNCw1LjIsNi43LDcuOCwxMC4xICAgICBjLTIwLjctMjYuOC0zNy45LTU2LjEtNTEuMS04Ny4zYzEuNyw0LDMuNCw4LDUsMTEuOWMtMTMuNC0zMS45LTIyLjYtNjUuNS0yNy4zLTk5LjhjMC42LDQuNCwxLjIsOC45LDEuOCwxMy4zICAgICBjLTQuNi0zNS00LjYtNzAuNSwwLTEwNS41Yy0wLjYsNC40LTEuMiw4LjktMS44LDEzLjNjNC43LTM0LjMsMTMuOC02Ny45LDI3LjMtOTkuOGMtMS43LDQtMy40LDgtNSwxMS45ICAgICBjMTMuMi0zMS4yLDMwLjQtNjAuNSw1MS4xLTg3LjNjLTIuNiwzLjQtNS4yLDYuNy03LjgsMTAuMWMyMC40LTI2LjIsNDQtNDkuOCw3MC4yLTcwLjJjLTMuNCwyLjYtNi43LDUuMi0xMC4xLDcuOCAgICAgYzI2LjgtMjAuNyw1Ni4xLTM3LjksODcuMy01MS4xYy00LDEuNy04LDMuNC0xMS45LDVjMzEuOS0xMy40LDY1LjUtMjIuNiw5OS44LTI3LjNjLTQuNCwwLjYtOC45LDEuMi0xMy4zLDEuOCAgICAgYzM1LTQuNiw3MC41LTQuNiwxMDUuNSwwYy00LjQtMC42LTguOS0xLjItMTMuMy0xLjhjMzQuMyw0LjcsNjcuOSwxMy44LDk5LjgsMjcuM2MtNC0xLjctOC0zLjQtMTEuOS01ICAgICBjMzEuMiwxMy4yLDYwLjUsMzAuNCw4Ny4zLDUxLjFjLTMuNC0yLjYtNi43LTUuMi0xMC4xLTcuOGMyNi4yLDIwLjQsNDkuOCw0NCw3MC4yLDcwLjJjLTIuNi0zLjQtNS4yLTYuNy03LjgtMTAuMSAgICAgYzIwLjcsMjYuOCwzNy45LDU2LjEsNTEuMSw4Ny4zYy0xLjctNC0zLjQtOC01LTExLjljMTMuNCwzMS45LDIyLjYsNjUuNSwyNy4zLDk5LjhjLTAuNi00LjQtMS4yLTguOS0xLjgtMTMuMyAgICAgQzg1My4zLDQ3Ny4zLDg1NC41LDQ5NC45LDg1NC41LDUxMi41YzAsMTIuOCw1LjYsMjYuMywxNC42LDM1LjRjOC43LDguNywyMi45LDE1LjIsMzUuNCwxNC42YzEyLjktMC42LDI2LjMtNC44LDM1LjQtMTQuNiAgICAgYzktOS44LDE0LjctMjEuOCwxNC42LTM1LjRjLTAuMi04OS4zLTI3LjQtMTc5LjYtNzkuNC0yNTIuNWMtMTMuOS0xOS40LTI4LjktMzguMi00NS41LTU1LjRjLTE2LjQtMTYuOS0zNC40LTMxLjgtNTMtNDYuMiAgICAgYy0zNS0yNi44LTc0LjItNDctMTE1LjUtNjIuMmMtNDIuNC0xNS42LTg4LTIzLjctMTMzLjEtMjUuNGMtNDUuNS0xLjgtOTIuMiwzLjktMTM2LDE2LjNDMzA4LDExMSwyMzAsMTYwLjYsMTc0LjUsMjI4ICAgICBjLTE1LjIsMTguNS0yOS41LDM3LjgtNDEuOCw1OC4zYy0xMi4yLDIwLjQtMjIsNDEuOS0zMS4xLDYzLjljLTE3LjIsNDEuOC0yNi40LDg2LjQtMjkuOSwxMzEuNGMtNyw4OS43LDE1LjcsMTgyLjMsNjIuMywyNTkuMSAgICAgYzQ1LjEsNzQuMiwxMTIuOCwxMzYuNSwxOTIuMiwxNzIuM2MyMiw5LjksNDQuNSwxOC44LDY3LjcsMjUuM2MyMy44LDYuNiw0OC4xLDEwLjYsNzIuNywxMy40YzQ1LjgsNS4zLDkyLjQsMi4yLDEzNy41LTcgICAgIEM2OTAsOTI3LjUsNzcxLDg4MS44LDgzMS40LDgxOC41YzYwLjctNjMuNiwxMDMuNS0xNDYsMTE2LjgtMjMzLjJjMy43LTI0LjIsNi4yLTQ4LjQsNi4zLTcyLjhjMC0xMi44LTUuNi0yNi4zLTE0LjYtMzUuNCAgICAgYy04LjctOC43LTIyLjktMTUuMi0zNS40LTE0LjZjLTEyLjksMC42LTI2LjMsNC44LTM1LjQsMTQuNkM4NjAuMiw0ODYuOSw4NTQuNSw0OTguOSw4NTQuNSw1MTIuNXoiPjwvcGF0aD48L2c+PC9nPjxnPjxnPjxwYXRoIGQ9Ik01NjEuNSw3MDRjMC0yMy40LDAtNDYuNywwLTcwLjFjMC0zNy4xLDAtNzQuMSwwLTExMS4yYzAtOC42LDAtMTcuMSwwLTI1LjdjMC0xMi44LTUuNi0yNi4zLTE0LjYtMzUuNCAgICAgYy04LjctOC43LTIyLjktMTUuMi0zNS40LTE0LjZjLTEyLjksMC42LTI2LjMsNC44LTM1LjQsMTQuNmMtOSw5LjgtMTQuNiwyMS44LTE0LjYsMzUuNGMwLDIzLjQsMCw0Ni43LDAsNzAuMSAgICAgYzAsMzcuMSwwLDc0LjEsMCwxMTEuMmMwLDguNiwwLDE3LjEsMCwyNS43YzAsMTIuOCw1LjYsMjYuMywxNC42LDM1LjRjOC43LDguNywyMi45LDE1LjIsMzUuNCwxNC42YzEyLjktMC42LDI2LjMtNC44LDM1LjQtMTQuNiAgICAgQzU1NS44LDcyOS42LDU2MS41LDcxNy42LDU2MS41LDcwNEw1NjEuNSw3MDR6Ij48L3BhdGg+PC9nPjwvZz48Zz48Zz48cGF0aCBkPSJNNTYxLjUsMzQ2YzAtOSwwLTE4LDAtMjdjMC0xMi44LTUuNi0yNi4zLTE0LjYtMzUuNGMtOC43LTguNy0yMi45LTE1LjItMzUuNC0xNC42ICAgICBjLTEyLjksMC42LTI2LjMsNC44LTM1LjQsMTQuNmMtOSw5LjgtMTQuNiwyMS44LTE0LjYsMzUuNGMwLDksMCwxOCwwLDI3YzAsMTIuOCw1LjYsMjYuMywxNC42LDM1LjRjOC43LDguNywyMi45LDE1LjIsMzUuNCwxNC42ICAgICBjMTIuOS0wLjYsMjYuMy00LjgsMzUuNC0xNC42QzU1NS44LDM3MS42LDU2MS41LDM1OS42LDU2MS41LDM0Nkw1NjEuNSwzNDZ6Ij48L3BhdGg+PC9nPjwvZz48L2c+PC9zdmc+);
+  background-size: 17px 17px;
+  width: 17px; height: 17px;
+  display: inline-block;
+  position: relative;
+  top: 3px; left: 3px;
+  opacity: 0.75;
+  z-index: 10000000;
+  &:hover {
+    opacity: 1;
+  }
+}
+
+/* tracker info modal */
+div.modal { 
+	z-index: 10000; 
+
+  // wiki link button
+	a#wiki-link {
+		// margin-bottom: 1em;
+    font-size: 15px;
+		i.glyphicons {
+			margin-left: 6px;
+      margin-top: 2px;
+		}
+	}
+}
+
+/* About styles */
+
+div#about-content ul {
+  padding: 0 0 0 15px;
+}
+
+/* Bootstrap overrides */
+
+.modal-lg { width: 98%; margin: 5% auto; }
+.btn-justify-80 { min-width: 150px; max-width: 150px; }
+.panel { border-radius: 0; }
+#btn-main-menu { color:#fff; background:#e84c22; font-weight:bold; }
+#btn-main-menu:focus { outline: none; }
+/* override bootstrap input style */
+input.form-control:focus, select.form-control:focus { 
+  border: solid 1px #ccc; box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); -moz-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075); transition: none; -moz-transition: none; -webkit-transition: none; 
+}
+/* override bootstrap table td padding */
+.table>tbody>tr>td, .table>tbody>tr>th, .table>tfoot>tr>td, .table>tfoot>tr>th, .table>thead>tr>td, .table>thead>tr>th {
+  padding: 4px;
+}
+/*force smaller font size on table*/
+div#table table.table {
+  font-size:12px;
+}
+
+// datatable overrides
+table.dataTable thead > tr > th {
+  padding-left: 0;
+}
+
+/* Media Queries */
+/* styles specific to larger screens: only apply above stated pixel width (greater or equal to); */
+@media (min-width:768px) {
+  /*extra large button; extends .btn */
+  .btn-xlarge {margin: 0 12px; padding: 18px 28px;font-size: 22px; line-height: normal; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; }
+  .modal-lg { width: 50%; margin: 10% auto; }
+}
+
+/* styles specific to smaller screens: applies below this width (less or equal to); */
+@media screen and (max-width: 810px) {
+  label[for="search"] {display:none}
+}
+
+@media screen and (max-width: 767px) {
+  .btn-justify-80 { font-size: 90%; min-width: 83px; max-width: 83px;}
+  div.table-container { font-size:85%; }
+  div.layer-control { bottom: 40px;}
+  div#home-button-wrapper a:hover {background: #fff;}
+}
+
+@media screen and (max-width: 400px) {
+  div.table-container table.table { font-size:11px; }
+  /* because attribution takes up two lines on small screens, have to bump up the bottom on the layer control */
+  div.layer-control {bottom: 37px;}
+  div#layers-icon { bottom: 40px };
+  div.tab-wrapper label.tab {padding: 10px 12px;}
+  div#home-button-wrapper {float:right; display:inline; margin-top:4px;}
+  div#home-button-wrapper a {padding:0; font-size:85%;}
+}
+
+@media screen and (max-width: 374px) {
+  div.tab-wrapper label.tab {padding: 10px 10px;}
+}
+@media screen and (max-width: 325px) {
+  div#home-button-wrapper {margin:0;display:inline;}
+}
+
+/* on moderately short screens, shrink the layer control height */
+@media screen and (max-height: 700px) {
+  div.layer-control { max-height:480px; }
+}
+
+/* on short screens, shrink the layer control some more */
+@media screen and (max-height: 550px) {
+  div.layer-control { max-height:380px; }
+}
+
+/* on very short screens, we have to shrink the layer control even more */
+@media screen and (max-height: 375px) {
+  div.layer-control { max-height:280px; }
+}
