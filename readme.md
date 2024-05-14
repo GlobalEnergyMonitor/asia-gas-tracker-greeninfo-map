@@ -14,7 +14,7 @@ Pre-requisites:
 * Node and npm
 * Yarn
 
-To match the development node version:
+To match the development node version (to read more on this https://www.linode.com/docs/guides/how-to-install-use-node-version-manager-nvm/#the-nvm-use-command):
 ```
 nvm use
 ```
@@ -28,6 +28,9 @@ To start a development server:
 ```
 npm run start
 ```
+## Development Troubleshooting Help 
+If using OSX and running into an ERROR6 OSGEOS error or missing gdal library try this via https://gis.stackexchange.com/questions/316682/gdal-installation-on-mac-osx-via-conda-fails-linked-due-to-libpoppler-and-font: 
+```conda create --name=gis gdal geopandas rasterio ipykernel --channel=conda-forge```
 
 
 ## Production
@@ -65,6 +68,29 @@ ogr2ogr -f geojson -dialect sqlite -sql "select * from world where NAME in ('Ban
 
 Note:
 - Watch for changing values in the `type` field in data.csv. These must match (spelling and case) the values in `CONFIG.fossil_types`, but often there are slight changes (singular vs plural, upper case vs. lower case)
+
+### Creating countries.json file 
+
+Mason/GEM has a standardized set of global country names, and Tom copied these into `world.json`. Tom also updated these in `country_lookup.csv`. Given that, there is no longer anything to "look up" as incoming data names _should_ match names in `world.json` 1:1
+
+That said, we still need to run this script for two reasons
+1. As a check on incoming data names. If something doesn't match `country_lookup.csv`, it gets flagged here and can be corrected in `data.csv` (and upstream in the spreadsheets)
+2. To subselect countries from `world.json` to use on the map as `countries.json`
+
+Note: 
+precision and simplification variables are set by the flags and parameters: 
+```-lco COORDINATE_PRECISION={precision} ```
+
+```-simplify {simplification}```
+
+Typically you can adjust these two parameters to help resolve geometric processing / geometric algorithm / orientation index calculation issues that can come up with ogr2ogr. Precision should stay at 3 however since we have a gem-wide agreement to standardize the number of decimals per point for exact and approximate coordinates. If there is a precision of 6, that means 6 decimal places will be retained. 
+
+Extremely high precision created larger file sizes, and may lead to ERROR1 issues like NaN or Inf values:
+```"CGAlgorithmsDD::orientationIndex encountered NaN/Inf numbers"```
+
+Higher simplification results in smaller file sizes and coarser geometries where as lower precision will retain more detail in the geometries but will create larger file sizes. The simplification value represents a distance threshold, and a higher value means that geometries will be simplified or generalized more aggressively.
+
+
 
 ## Testing new data
 
