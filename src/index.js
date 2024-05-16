@@ -167,7 +167,7 @@ CONFIG.refresh_table = true;
 $(document).ready(function () {
   // data initialization first, then the remaining init steps
   Promise.all([
-    initData('./static/data/Asia_Gas_Tracker_map_data_2024-05-14_16162024-05-14.csv'), 
+    initData('./static/data/data.csv'), 
     initData('./static/data/countries.json')])
     .then(function(data) {
       initDataFormat(data)    // get data ready for use
